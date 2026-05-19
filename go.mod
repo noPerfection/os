@@ -1,9 +1,8 @@
-module github.com/ahmetson/os-lib
+module github.com/sds-framework/os-lib
 
 go 1.19
 
 require (
-	github.com/ahmetson/datatype-lib v0.0.0-20230927201942-0cc58292a7a3
 	github.com/cakturk/go-netstat v0.0.0-20200220111822-e5b49efee7a5
 	github.com/phayes/freeport v0.0.0-20220201140144-74d24b5ae9f5
 	github.com/stretchr/testify v1.8.2

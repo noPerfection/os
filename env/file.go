@@ -3,12 +3,16 @@ package env
 
 import (
 	"fmt"
-	"github.com/ahmetson/datatype-lib/data_type/key_value"
-	"github.com/ahmetson/os-lib/path"
 
-	"github.com/ahmetson/os-lib/arg"
 	"github.com/joho/godotenv"
+	"github.com/sds-framework/os-lib/arg"
+	"github.com/sds-framework/os-lib/path"
 )
+
+// KeyValue is implemented by types that can be written as .env key/value pairs.
+type KeyValue interface {
+	MapString() map[string]string
+}
 
 // LoadAnyEnv gets the list of all .env file paths in the command line arg.
 // Then load them up to the application's environment variables.
@@ -40,7 +44,7 @@ func LoadAnyEnv() error {
 
 // WriteEnv writes the given key value to the file.
 // If the file exists, then it will be truncated.
-func WriteEnv(data key_value.KeyValue, path string) error {
+func WriteEnv(data KeyValue, path string) error {
 	err := godotenv.Write(data.MapString(), path)
 	if err != nil {
 		return fmt.Errorf("godotenv.Write: %w", err)

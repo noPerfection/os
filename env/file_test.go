@@ -1,7 +1,7 @@
 package env
 
 import (
-	"github.com/ahmetson/os-lib/path"
+	"github.com/sds-framework/os-lib/path"
 	"os"
 	"path/filepath"
 	"testing"
