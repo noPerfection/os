@@ -2,10 +2,6 @@
 
 `github.com/noPerfection/os` is a small Go utility library for the SDS framework. It wraps common operating-system concerns—paths, CLI flags, environment files, processes, and ports—so application code does not have to repeat that logic.
 
-## Disclaimer
-
-Applications that call `env.LoadAnyEnv()` automatically enable `.env` argument loading. Any application argument without the `--` prefix and ending with `.env` is considered an environment file path and loaded into the process environment. If no `.env` paths are provided, `env.LoadAnyEnv()` loads the default `.env` file.
-
 ## Packages
 
 ### `path` — filesystem helpers
