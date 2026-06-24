@@ -18,15 +18,19 @@ type TestArgSuite struct {
 // Make sure that Account is set to five
 // before each test
 func (suite *TestArgSuite) SetupTest() {
+	os.Args = []string{"app"}
 	os.Args = append(os.Args, "--plain")
 	os.Args = append(os.Args, "--account")
 	os.Args = append(os.Args, "--number-key=5")
-	os.Args = append(os.Args, "./.test.env")
+	os.Args = append(os.Args, "--env=./.test.env")
+	os.Args = append(os.Args, "--env=./.other.env")
 
 	suite.flags = []string{
 		"plain",
 		"account",
 		"number-key=5",
+		"env=./.test.env",
+		"env=./.other.env",
 	}
 }
 
@@ -43,8 +47,8 @@ func (suite *TestArgSuite) Test_0_Run() {
 	suite.False(FlagExist("./.test.env"))
 
 	paths := EnvPaths()
-	suite.Require().Len(paths, 1)
-	suite.Require().Equal(paths[0], "./.test.env")
+	suite.Require().Len(paths, 2)
+	suite.Require().Equal([]string{"./.test.env", "./.other.env"}, paths)
 }
 
 func (suite *TestArgSuite) Test_1_Flag() {

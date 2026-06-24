@@ -14,12 +14,13 @@ type KeyValue interface {
 	MapString() map[string]string
 }
 
-// LoadAnyEnv gets the list of all .env file paths in the command line arg.
-// Then load them up to the application's environment variables.
+// LoadAnyEnv loads environment variables from repeated --env flags.
+// Example: ./app --env=.env --env=./beta.env
+//
+// When no --env flags are given, it falls back to ".env" in the current directory.
+// Paths are resolved relative to the executable directory.
 //
 // The values later will be available via app/config.Config.
-//
-// The .env files locations are related to the exec path
 func LoadAnyEnv() error {
 	currentDir, err := path.CurrentDir()
 	if err != nil {

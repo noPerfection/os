@@ -3,7 +3,7 @@
 // The SDS supports a Flag which is composed of name and optionally a value.
 //
 // Flags() returns all flags
-// EnvPaths() returns the env file paths.
+// EnvPaths() returns paths from repeated --env flags.
 // FlagExist(name) flag exists?
 // ExtractFlagValue(flag) finds the flag and returns the value of it.
 // ExtractFlagName(flag) returns the flag name.
@@ -103,27 +103,19 @@ func FlagValue(name string) string {
 	return ""
 }
 
-// EnvPaths any command line data that comes after the files are .env file paths
-// Any arg for application without '--' prefix is considered to be path to the
-// environment file.
+// EnvPaths returns paths from repeated --env flags.
 func EnvPaths() []string {
-	args := os.Args[1:]
-	if len(args) == 0 {
-		return []string{}
-	}
-
 	paths := make([]string, 0)
 
-	for _, arg := range args {
-		if IsFlag(arg) {
+	for _, flag := range Flags() {
+		if ExtractFlagName(flag) != "env" {
 			continue
 		}
 
-		if !strings.HasSuffix(arg, ".env") {
-			continue
+		value := ExtractFlagValue(flag)
+		if value != "" {
+			paths = append(paths, value)
 		}
-
-		paths = append(paths, arg)
 	}
 
 	return paths

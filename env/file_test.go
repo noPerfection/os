@@ -1,11 +1,12 @@
 package env
 
 import (
-	"github.com/noPerfection/os/path"
 	"os"
 	"path/filepath"
 	"testing"
 
+	"github.com/noPerfection/os/path"
+	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
 )
 
@@ -24,7 +25,7 @@ func (test *TestEnvSuite) SetupTest() {
 	test.Require().NoError(err)
 
 	test.envPath = filepath.Join(currentDir, ".test.env")
-	os.Args = append(os.Args, test.envPath)
+	os.Args = []string{"app", "--env=" + test.envPath}
 
 	file, err := os.Create(test.envPath)
 	test.Require().NoError(err)
@@ -44,6 +45,34 @@ func (test *TestEnvSuite) TearDownTest() {
 func (test *TestEnvSuite) TestRun() {
 	err := LoadAnyEnv()
 	test.Require().NoError(err)
+}
+
+func TestLoadAnyEnvMultipleFiles(t *testing.T) {
+	originalArgs := os.Args
+	t.Cleanup(func() {
+		os.Args = originalArgs
+	})
+
+	currentDir, err := path.CurrentDir()
+	require.NoError(t, err)
+
+	alphaPath := filepath.Join(currentDir, ".alpha.env")
+	betaPath := filepath.Join(currentDir, ".beta.env")
+	t.Cleanup(func() {
+		_ = os.Remove(alphaPath)
+		_ = os.Remove(betaPath)
+		_ = os.Unsetenv("ALPHA_KEY")
+		_ = os.Unsetenv("BETA_KEY")
+	})
+
+	require.NoError(t, os.WriteFile(alphaPath, []byte("ALPHA_KEY=alpha\n"), 0o644))
+	require.NoError(t, os.WriteFile(betaPath, []byte("BETA_KEY=beta\n"), 0o644))
+
+	os.Args = []string{"app", "--env=" + alphaPath, "--env=" + betaPath}
+	require.NoError(t, LoadAnyEnv())
+
+	require.Equal(t, "alpha", os.Getenv("ALPHA_KEY"))
+	require.Equal(t, "beta", os.Getenv("BETA_KEY"))
 }
 
 // In order for 'go test' to run this suite, we need to create
