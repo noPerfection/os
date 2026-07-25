@@ -1,22 +1,26 @@
-# os-lib
+# noPerfection/os
 
-`github.com/noPerfection/os` is a small Go utility library for the SDS framework. It wraps common operating-system concerns—paths, CLI flags, environment files, processes, and ports—so application code does not have to repeat that logic.
+`github.com/noPerfection/os` is a small Go utilities to abstract away operating system. 
+
+> License? **Public Domain**
 
 ## Mushroom substrate
 
-This library also exposes a [Mushroom](https://github.com/ahmetson/mushroom) substrate so OS helpers can be resolved through Mushroom URLs instead of direct Go imports.
+This library also exposes a [Mushroom](https://github.com/ahmetson/mushroom) substrate so OS helpers can be resolved through Mushroom URLs instead of direct Go imports. Check mushroom link to know more about it. **Mushroom is optional**.
 
 Substrate URL: `pkg:os/$`, any url that satisfies it will be implemented using this substrate.
 
 Registered packages (each maps to an internal module):
 
+
 | Mushroom URL package | Go package |
-|----------------------|------------|
+| -------------------- | ---------- |
 | `pkg:os/path`        | `path`     |
 | `pkg:os/env`         | `env`      |
 | `pkg:os/net`         | `net`      |
 | `pkg:os/process`     | `process`  |
 | `pkg:os/arg`         | `arg`      |
+
 
 Packages are addressed as `pkg:os/<package>` (not `pkg:os#<package>`). A `#module` suffix is not supported, but maybe in the future it might have modules, for example pkg:os/path#windows might deal with Windows OS related path functions. But for now nothing like that.
 
@@ -57,14 +61,16 @@ Supported functions (must include `()` in the URL):
 
 Examples:
 
-| URL | Result |
-|-----|--------|
-| `*pkg:os/path?func=CurrentDir()` | executable directory |
-| `*pkg:os/path?func=FileName(/tmp/a.txt)` | `"a.txt"` |
-| `*pkg:os/path?func=FileName()` | error — parameter required |
-| `*pkg:os/path?func=MakeDir()` | error — not registered |
-| `*pkg:os/path?var` | error — `path` has no `var` resources |
-| `pkg:os#path?func=CurrentDir` | error — wrong package syntax |
+
+| URL                                      | Result                                |
+| ---------------------------------------- | ------------------------------------- |
+| `*pkg:os/path?func=CurrentDir()`         | executable directory                  |
+| `*pkg:os/path?func=FileName(/tmp/a.txt)` | `"a.txt"`                             |
+| `*pkg:os/path?func=FileName()`           | error — parameter required            |
+| `*pkg:os/path?func=MakeDir()`            | error — not registered                |
+| `*pkg:os/path?var`                       | error — `path` has no `var` resources |
+| `pkg:os#path?func=CurrentDir`            | error — wrong package syntax          |
+
 
 ### `env` — `?var=…`
 
@@ -76,12 +82,14 @@ Read an environment variable:
 
 Optional query parameters run `env.LoadAnyEnv` before reading the variable:
 
-| Parameter | Effect |
-|-----------|--------|
-| `LoadAnyEnv=true` | `env.LoadAnyEnv(true)` |
-| `LoadAnyEnv=false` | `env.LoadAnyEnv(false)` |
-| `LoadAnyEnv` (no value) | `env.LoadAnyEnv()` |
-| `arg=true` | `env.LoadAnyEnv(true)` |
+
+| Parameter               | Effect                  |
+| ----------------------- | ----------------------- |
+| `LoadAnyEnv=true`       | `env.LoadAnyEnv(true)`  |
+| `LoadAnyEnv=false`      | `env.LoadAnyEnv(false)` |
+| `LoadAnyEnv` (no value) | `env.LoadAnyEnv()`      |
+| `arg=true`              | `env.LoadAnyEnv(true)`  |
+
 
 Returns an empty string when the variable is unset.
 
@@ -145,6 +153,8 @@ In short, this library is a thin **OS/platform utility layer** for SDS applicati
 - [github.com/joho/godotenv](https://github.com/joho/godotenv) — `.env` file loading and writing
 - [github.com/phayes/freeport](https://github.com/phayes/freeport) — free port allocation
 - [github.com/cakturk/go-netstat](https://github.com/cakturk/go-netstat) — TCP socket / process lookup
+
 ## Requirements
 
 - Go 1.19+
+
