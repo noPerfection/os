@@ -24,11 +24,11 @@ type Mycelium struct {
 
 var _ mushroom.Mycelium = (*Mycelium)(nil)
 
-// New returns an OS substrate registered with the pattern pkg:os/$ .
+// New returns an OS substrate registered with the pattern pkg:os/$#$ .
 func New() mushroom.Substrate {
 	substrate := &Substrate{}
 	soil := &mushroom.Soil{}
-	substrate.url, _ = soil.Hypha("pkg:os/$")
+	substrate.url, _ = soil.Hypha("pkg:os/$#$")
 	return substrate
 }
 

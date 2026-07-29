@@ -8,7 +8,7 @@
 
 This library also exposes a [Mushroom](https://github.com/ahmetson/mushroom) substrate so OS helpers can be resolved through Mushroom URLs instead of direct Go imports. Check mushroom link to know more about it. **Mushroom is optional**.
 
-Substrate URL: `pkg:os/$`, any url that satisfies it will be implemented using this substrate.
+Substrate URL: `pkg:os/$#$`, any url that satisfies it will be implemented using this substrate.
 
 Registered packages (each maps to an internal module):
 
