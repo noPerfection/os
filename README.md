@@ -1,10 +1,73 @@
-# noPerfection/os
-
-`github.com/noPerfection/os` is a small Go utilities to abstract away operating system. 
+# OS abstraction library for Go
 
 > License? **Public Domain**
 
-## Mushroom substrate
+The operating system functionality is categorized by packages: `path`, `arg`, `env`, `process` and `net`.
+
+This is abstracting the device where your app is running. Its used by `noPerfection` framework, so apps can talk to OS context from any device.
+
+Contributions are welcome, fork and add your functions. Use [CascadeFund](https://cascadefund.org/) for discovery of your changes along with this module for users.
+
+It also comes with the`mushrom` substrate, so you can call this operating system functions remotely using URLs. For example
+
+`*pkg:os/path?func=CurrentDir()` URL from anywhere of your app to return full path of app's directory.
+
+List of the available packages and their functions are listed below. Mushroom substrate is explained at the bottom of this readme.
+
+### `path` — filesystem helpers
+
+- Resolve the executable's directory (`CurrentDir`) and build absolute paths relative to it (`AbsDir`)
+- File and directory existence checks that distinguish files from directories (`FileExist`, `DirExist`)
+- Path parsing: basename, strip extension, split directory and name (`FileName`, `NoExtension`, `DirAndFileName`)
+- Create nested directories (`MakeDir`)
+- Platform-specific binary paths: `.exe` on Windows, plain name on Unix (`BinPath`)
+
+### `arg` — SDS-style CLI flags
+
+- Flags use `--name` or `--name=value` (not the standard library `flag` package)
+- Helpers to list flags, test existence, read values, and build flag strings
+- Positional arguments ending in `.env` are treated as environment file paths (`EnvPaths`)
+
+### `env` — `.env` loading and writing
+
+- `LoadAnyEnv()` reads `.env` paths from the command line (via `arg.EnvPaths()`), resolves them relative to the executable directory, and loads them with `godotenv` into process environment variables (for use with `app/config.Config` in the wider framework)
+- `WriteEnv()` writes key/value data to a `.env` file (any type implementing `env.KeyValue`)
+
+### `process` — process identity and port mapping
+
+- `CurrentPid()` returns the current process ID
+- `PortToPid()` finds which process is listening on a given TCP port (via `go-netstat`)
+
+### `net` — port availability
+
+- `GetFreePort()` picks an unused TCP port
+- `IsPortUsed()` checks whether something is listening on a host:port via a TCP dial
+
+## Summary
+
+In short, this library is a thin **OS/platform utility layer** for SDS applications: where the binary lives, how CLI flags and `.env` files are parsed, and how to work with ports and processes.
+
+## Dependencies
+
+- [github.com/ahmetson/mushroom](https://github.com/ahmetson/mushroom) — Mushroom URL substrate (`substrate` package)
+- [github.com/joho/godotenv](https://github.com/joho/godotenv) — `.env` file loading and writing
+- [github.com/phayes/freeport](https://github.com/phayes/freeport) — free port allocation
+- [github.com/cakturk/go-netstat](https://github.com/cakturk/go-netstat) — TCP socket / process lookup
+
+## Requirements
+
+- Go 1.19+
+
+For contributors, use the `go.local.mod`, as it will link the mushroom package from the local repo.
+
+```bash
+GOFLAGS=-modfile=go.local.mod go mod tidy
+GOFLAGS=-modfile=go.local.mod go test ./...
+```
+
+---
+
+## Mushroom Substrate
 
 This library also exposes a [Mushroom](https://github.com/ahmetson/mushroom) substrate so OS helpers can be resolved through Mushroom URLs instead of direct Go imports. Check mushroom link to know more about it. **Mushroom is optional**.
 
@@ -111,50 +174,4 @@ Variables:
 
 - `*pkg:os/arg?var=prefix` → `"--"`
 - `*pkg:os/arg?var=sep` → `"="`
-
-## Packages
-
-### `path` — filesystem helpers
-
-- Resolve the executable's directory (`CurrentDir`) and build absolute paths relative to it (`AbsDir`)
-- File and directory existence checks that distinguish files from directories (`FileExist`, `DirExist`)
-- Path parsing: basename, strip extension, split directory and name (`FileName`, `NoExtension`, `DirAndFileName`)
-- Create nested directories (`MakeDir`)
-- Platform-specific binary paths: `.exe` on Windows, plain name on Unix (`BinPath`)
-
-### `arg` — SDS-style CLI flags
-
-- Flags use `--name` or `--name=value` (not the standard library `flag` package)
-- Helpers to list flags, test existence, read values, and build flag strings
-- Positional arguments ending in `.env` are treated as environment file paths (`EnvPaths`)
-
-### `env` — `.env` loading and writing
-
-- `LoadAnyEnv()` reads `.env` paths from the command line (via `arg.EnvPaths()`), resolves them relative to the executable directory, and loads them with `godotenv` into process environment variables (for use with `app/config.Config` in the wider framework)
-- `WriteEnv()` writes key/value data to a `.env` file (any type implementing `env.KeyValue`)
-
-### `process` — process identity and port mapping
-
-- `CurrentPid()` returns the current process ID
-- `PortToPid()` finds which process is listening on a given TCP port (via `go-netstat`)
-
-### `net` — port availability
-
-- `GetFreePort()` picks an unused TCP port
-- `IsPortUsed()` checks whether something is listening on a host:port via a TCP dial
-
-## Summary
-
-In short, this library is a thin **OS/platform utility layer** for SDS applications: where the binary lives, how CLI flags and `.env` files are parsed, and how to work with ports and processes.
-
-## Dependencies
-
-- [github.com/ahmetson/mushroom](https://github.com/ahmetson/mushroom) — Mushroom URL substrate (`substrate` package)
-- [github.com/joho/godotenv](https://github.com/joho/godotenv) — `.env` file loading and writing
-- [github.com/phayes/freeport](https://github.com/phayes/freeport) — free port allocation
-- [github.com/cakturk/go-netstat](https://github.com/cakturk/go-netstat) — TCP socket / process lookup
-
-## Requirements
-
-- Go 1.19+
 
